@@ -15,18 +15,22 @@ def process_plo(uploaded_file):
         plo_achievement = df.groupby("MQF")["% Attainment"].mean().reset_index()
         plo_achievement["PLO"] = plo_achievement["MQF"].map(mqf_to_plo_mapping)
         
+        # Pastikan semua PLO dan MQF wujud walaupun tiada data
+        all_plo_df = pd.DataFrame(list(mqf_to_plo_mapping.items()), columns=["MQF", "PLO"])
+        final_plo_df = all_plo_df.merge(plo_achievement, on=["MQF", "PLO"], how="left")
+        
         # Susun mengikut urutan MQF yang betul
         mqf_order = ["KU", "CS", "PS", "IS", "COMS", "DS", "NS", "LAR", "KP", "ES", "EP"]
-        plo_achievement["Order"] = plo_achievement["MQF"].apply(lambda x: mqf_order.index(x) if x in mqf_order else float("inf"))
-        plo_achievement = plo_achievement.sort_values("Order").drop(columns=["Order"])
+        final_plo_df["Order"] = final_plo_df["MQF"].apply(lambda x: mqf_order.index(x) if x in mqf_order else float("inf"))
+        final_plo_df = final_plo_df.sort_values("Order").drop(columns=["Order"])
         
         # Susun semula lajur agar PLO menjadi lajur pertama
-        plo_achievement = plo_achievement[["PLO", "MQF", "% Attainment"]]
+        final_plo_df = final_plo_df[["PLO", "MQF", "% Attainment"]]
         
         output_file = "PLO_Achievement.xlsx"
-        plo_achievement.to_excel(output_file, index=False)
+        final_plo_df.to_excel(output_file, index=False)
         
-        return plo_achievement, output_file
+        return final_plo_df, output_file
     return None, None
 
 st.title("PLO Calculation Tool")
