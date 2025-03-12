@@ -20,6 +20,9 @@ def process_plo(uploaded_file):
         plo_achievement["Order"] = plo_achievement["MQF"].apply(lambda x: mqf_order.index(x) if x in mqf_order else float("inf"))
         plo_achievement = plo_achievement.sort_values("Order").drop(columns=["Order"])
         
+        # Susun semula lajur agar PLO menjadi lajur pertama
+        plo_achievement = plo_achievement[["PLO", "MQF", "% Attainment"]]
+        
         output_file = "PLO_Achievement.xlsx"
         plo_achievement.to_excel(output_file, index=False)
         
