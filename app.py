@@ -2,7 +2,6 @@ import streamlit as st
 import pandas as pd
 
 # Increase file upload limit to 500MB
-st.set_option("server.maxUploadSize", 500)
 
 def process_plo(uploaded_file):
     if uploaded_file is not None:
