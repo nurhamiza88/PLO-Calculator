@@ -13,6 +13,7 @@ def process_plo(uploaded_file):
         
         # Kira purata % Attainment bagi setiap kategori MQF
         plo_achievement = df.groupby("MQF")["% Attainment"].mean().reset_index()
+        plo_achievement["% Attainment"] = plo_achievement["% Attainment"].round(2)  # Format kepada 2 titik perpuluhan
         plo_achievement["PLO"] = plo_achievement["MQF"].map(mqf_to_plo_mapping)
         
         # Pastikan semua PLO dan MQF wujud walaupun tiada data
