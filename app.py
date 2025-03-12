@@ -1,3 +1,4 @@
+st.set_option("server.maxUploadSize", 500)
 import streamlit as st
 import pandas as pd
 
