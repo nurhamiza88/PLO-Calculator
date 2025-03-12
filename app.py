@@ -1,7 +1,6 @@
 import streamlit as st
 import pandas as pd
 
-
 def process_plo(uploaded_file):
     if uploaded_file is not None:
         df = pd.read_excel(uploaded_file)
@@ -11,7 +10,7 @@ def process_plo(uploaded_file):
             "DS": "PLO6", "NS": "PLO7", "LAR": "PLO8", "KP": "PLO9", "ES": "PLO10", "EP": "PLO11"
         }
         
-        plo_achievement = df.groupby("MQF").apply(lambda x: (x["% Attainment"] * x["Weightage"]).sum() / x.shape[0])
+        plo_achievement = df.groupby("MQF").apply(lambda x: (x["% Attainment"] * x["Weightage"]).sum() / x["Weightage"].sum())
         plo_achievement_df = plo_achievement.reset_index()
         plo_achievement_df.columns = ["MQF", "PLO Achievement (%)"]
         
