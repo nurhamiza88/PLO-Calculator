@@ -13,8 +13,9 @@ def process_plo(uploaded_file):
         
         # Kira purata % Attainment bagi setiap kategori MQF
         plo_achievement = df.groupby("MQF")["% Attainment"].mean().reset_index()
-        plo_achievement["% Attainment"] = plo_achievement["% Attainment"].round(2)  # Format kepada 2 titik perpuluhan
+        plo_achievement["% of PLO Attainment"] = plo_achievement["% Attainment"].round(2)  # Format kepada 2 titik perpuluhan
         plo_achievement["PLO"] = plo_achievement["MQF"].map(mqf_to_plo_mapping)
+        plo_achievement = plo_achievement.drop(columns=["% Attainment"])  # Buang lajur lama
         
         # Pastikan semua PLO dan MQF wujud walaupun tiada data
         all_plo_df = pd.DataFrame(list(mqf_to_plo_mapping.items()), columns=["MQF", "PLO"])
@@ -26,9 +27,9 @@ def process_plo(uploaded_file):
         final_plo_df = final_plo_df.sort_values("Order").drop(columns=["Order"])
         
         # Susun semula lajur agar PLO menjadi lajur pertama
-        final_plo_df = final_plo_df[["PLO", "MQF", "% Attainment"]]
+        final_plo_df = final_plo_df[["PLO", "MQF", "% of PLO Attainment"]]
         
-        output_file = "PLO_Achievement.xlsx"
+        output_file = "PLO_Attainment_Percentage.xlsx"
         final_plo_df.to_excel(output_file, index=False)
         
         return final_plo_df, output_file
@@ -47,4 +48,4 @@ if uploaded_file is not None:
         st.dataframe(results_df)
         
         with open(output_file, "rb") as file:
-            st.download_button(label="Download Processed PLO Data", data=file, file_name="PLO_Achievement.xlsx", mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+            st.download_button(label="Download Processed PLO Data", data=file, file_name="PLO_Attainment_Percentage.xlsx", mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
